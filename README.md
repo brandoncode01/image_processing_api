@@ -24,9 +24,27 @@ This API was designed to be implement for different applications that requires m
 
 ## Design
 
-- Todo
-  
+The following diagrams three main part of this API
+
+- Client
+- API
+- Image processing library
+
+I decided to separate the image processing functions and utilities into a separate library. The API django rest framework is responsible to response to a specific services, validate, and request specific functions required for image processing.
+
+![Design](Designs/API_activity_diagram.png)
+
 ## Use Cases
+
+Some of the main use cases for this API is to perform basic image processing operations such as:
+
+- Gray scale
+- Binary Image
+- Restoration
+- Image Enhancement
+- Image translation
+- RGBA
+- Object detection (Future integration)
 
 ## Requirements
 
@@ -36,4 +54,13 @@ This API was designed to be implement for different applications that requires m
 
 ## Out of Scope
 
+This API doesn't contemplate the following aspects
+
+- Authentication such as JWT.
+- Implementation of AI for specific image functions.
+- Database storage (The response image and processed image is stored and deleted after being processed and sended through json response).
+- Only one image can be processed at time (future implementation may process multiple images).
+
 ## Future Integrations and Features
+
+Some future integration that this API may have is Object detection with AI, Object Description and specific AI utilities.
