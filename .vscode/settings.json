@@ -1,0 +1,12 @@
+{
+    "cSpell.words": [
+        "frombuffer",
+        "grayscale",
+        "imdecode",
+        "imencode",
+        "IMREAD",
+        "RGBA",
+        "runserver",
+        "tobytes"
+    ]
+}
