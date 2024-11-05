@@ -2,12 +2,18 @@
 import numpy as np
 from django.core.files.uploadedfile import InMemoryUploadedFile
 import  cv2
+from matplotlib import pyplot as plt
+from io import BytesIO
+import matplotlib
 
+
+matplotlib.use('agg') #executing in different context since is not thread safe
 
 class BasicProcessing:
     
     def __init__(self):
         self._image = None
+        self._plot = None
         
         
     def _inMemoryLoad(self, source:InMemoryUploadedFile):
@@ -111,6 +117,14 @@ class BasicProcessing:
         
         return success, result
 
+
+    def getPlot(self, extension='.png'):
+        if self._plot is None:
+            raise ValueError("You haven't generated any plot.")
+        
+        success, result = cv2.imencode(extension, self._plot)
+
+        return success, result
     
     
     def binaryImage(self, lower=127, upper=255):
@@ -150,4 +164,26 @@ class BasicProcessing:
         w += scaling * w // 100
         
         self._image = cv2.resize(self._image, (w, h))
+        
+        
+    def colorHistogram(self):
+        if self._image is None:
+            raise ValueError("You must have an image to perform this operation.")
+        
+        color = ('b', 'g', 'r')
+        plt.title("Color BGR Histogram")
+        for i, col in enumerate(color):
+            histr = cv2.calcHist([self._image], [i],None, [256],  [0, 256])
+            plt.plot(histr)
+            plt.xlim([0, 256])
+            
+            
+        buffer = BytesIO() 
+        plt.savefig(buffer, format='png')
+        buffer.seek(0)
+        img_buffer = np.frombuffer(buffer.getvalue(), np.uint8)
+        plt.close()
+        buffer.close()
+        
+        self._plot = cv2.imdecode(img_buffer, cv2.IMREAD_COLOR)
         

@@ -109,3 +109,26 @@ class ScaleImageView(APIView):
         if success: return HttpResponse(image.tobytes(), status=HTTP_200_OK, content_type='image/png')
         
         return Response({'status': 'Error while performing scale please check params and image'}, HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    
+    
+
+
+class BGRPlot(APIView):
+    serializer_class = ImageSerializer
+    
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            basic_processing = BasicProcessing()
+            image_source = serializer.validated_data['image']
+            try:
+                basic_processing._inMemoryLoad(image_source)
+                basic_processing.colorHistogram()
+            except ValueError as e:
+                return Response({'status', f'There was an error while performing operations {e}'}, HTTP_400_BAD_REQUEST)
+                
+        success, img_plot = basic_processing.getPlot()
+        if success: return HttpResponse(img_plot.tobytes(), status = HTTP_200_OK, content_type='image/png')
+
+        return Response({'status', 'Error while performing plot operations please validate provided image'})
+        
